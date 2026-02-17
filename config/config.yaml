@@ -30,3 +30,8 @@ training:
   trained_model_path: artifacts/training/model.h5
 
 
+evaluation:
+  path_of_model: artifacts/training/model.h5
+  training_data: artifacts/data_ingestion/Chicken-fecal-images
+  score_file_path: artifacts/scores.json
+

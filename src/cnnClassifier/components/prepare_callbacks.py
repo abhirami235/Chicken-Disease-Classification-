@@ -1,6 +1,4 @@
 import os
-import urllib.request as request
-from zipfile import ZipFile
 import tensorflow as tf
 import time
 from cnnClassifier.entity.config_entity import PrepareCallbacksConfig
@@ -25,7 +23,7 @@ class PrepareCallback:
     @property
     def _create_ckpt_callbacks(self):
         return tf.keras.callbacks.ModelCheckpoint(
-            filepath=self.config.checkpoint_model_filepath,
+            filepath=str(self.config.checkpoint_model_filepath),
             save_best_only=True
         )
 

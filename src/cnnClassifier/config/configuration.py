@@ -104,9 +104,13 @@ class ConfigurationManager:
 
 
     def get_validation_config(self) -> EvaluationConfig:
+        eval_config_section = self.config.evaluation
+        create_directories([Path(eval_config_section.score_file_path).parent])
+
         eval_config = EvaluationConfig(
-            path_of_model=Path("artifacts/training/model.h5"),
-            training_data=Path("artifacts/data_ingestion/Chicken-fecal-images"),
+            path_of_model=Path(eval_config_section.path_of_model),
+            training_data=Path(eval_config_section.training_data),
+            score_file_path=Path(eval_config_section.score_file_path),
             all_params=self.params,
             params_image_size=self.params.IMAGE_SIZE,
             params_batch_size=self.params.BATCH_SIZE

@@ -1,0 +1,50 @@
+stages:
+  data_ingestion:
+    cmd: PYTHONPATH=src python -m cnnClassifier.pipeline.stage_01_data_ingestion
+    deps:
+      - config/config.yaml
+      - src/cnnClassifier/components/data_ingestion.py
+      - src/cnnClassifier/config/configuration.py
+      - src/cnnClassifier/pipeline/stage_01_data_ingestion.py
+    outs:
+      - artifacts/data_ingestion
+
+  prepare_base_model:
+    cmd: PYTHONPATH=src python -m cnnClassifier.pipeline.stage_02_prepare_base_model
+    deps:
+      - config/config.yaml
+      - params.yaml
+      - src/cnnClassifier/components/prepare_base_model.py
+      - src/cnnClassifier/config/configuration.py
+      - src/cnnClassifier/pipeline/stage_02_prepare_base_model.py
+    outs:
+      - artifacts/prepare_base_model/base_model.h5
+      - artifacts/prepare_base_model/base_model_updated.h5
+
+  training:
+    cmd: PYTHONPATH=src python -m cnnClassifier.pipeline.stage_03_training
+    deps:
+      - config/config.yaml
+      - params.yaml
+      - artifacts/data_ingestion/Chicken-fecal-images
+      - artifacts/prepare_base_model/base_model_updated.h5
+      - src/cnnClassifier/components/prepare_callbacks.py
+      - src/cnnClassifier/components/training.py
+      - src/cnnClassifier/config/configuration.py
+      - src/cnnClassifier/pipeline/stage_03_training.py
+    outs:
+      - artifacts/training/model.h5
+      - artifacts/prepare_callbacks
+
+  evaluation:
+    cmd: PYTHONPATH=src python -m cnnClassifier.pipeline.stage_04_evaluation
+    deps:
+      - config/config.yaml
+      - params.yaml
+      - artifacts/data_ingestion/Chicken-fecal-images
+      - artifacts/training/model.h5
+      - src/cnnClassifier/components/evaluation.py
+      - src/cnnClassifier/config/configuration.py
+      - src/cnnClassifier/pipeline/stage_04_evaluation.py
+    metrics:
+      - artifacts/scores.json
